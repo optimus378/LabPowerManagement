@@ -41,6 +41,8 @@ The script can be run on schedule as well as manually triggered from a workstati
       -  OU Path of the computers you'd like to target 
   - $LogFilePath: Location of the Log File
 
+Example of $Locations Section:
+
           $Locations = @{
               Lab1= @{
                   SharedFolder = '\\SERVER\SHARE\'
@@ -96,7 +98,7 @@ The script can be run on schedule as well as manually triggered from a workstati
   It then sends a Shutdown command to each computer in the JSON File
   Usage Example: 
     
-    'Stop-Computers -location Lab2 
+    Stop-Computers -location Lab2 
 
 ### Function: Start-Computers 
 
