@@ -34,7 +34,8 @@ Firewall Properly configured to allow WinRM access on all computers. (In essense
            -  Shared Folder path
            -  OU Path of the computers you'd like to target 
            $LogFilePath: Location of the Log File
-           
+'''    
+
   $Locations = @{
       Lab1= @{
           SharedFolder = '\\SERVER\SHARE\'
@@ -47,6 +48,8 @@ Firewall Properly configured to allow WinRM access on all computers. (In essense
 
       }
   }
+
+'''
 
   Save the Module and also place it in your Shared Folder or whereover you'll run it from. 
   Open PowerShell and navigate to the the powershell module path. 
