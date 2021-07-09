@@ -33,6 +33,7 @@ The script can be run on schedule as well as manually triggered from a workstati
   If you will be running this Module from multiple computers, you should share a folder(s) in a central location(s) where the JSON file(s) is/are accessible to the computers running the script.
   
   You'll need to define some things at the top of the script: 
+           
            - $Locations 
                -  Location Name  
                -  Shared Folder path
