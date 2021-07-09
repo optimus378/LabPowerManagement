@@ -60,7 +60,7 @@ The script can be run on schedule as well as manually triggered from a workstati
 
   Type: 
                              
-     'Import-Module SCPowerManagement.psm1'
+     Import-Module SCPowerManagement.psm1
   
   Nice, the module is imported. From here you are able to run the functions listed below. 
 
@@ -95,7 +95,7 @@ The script can be run on schedule as well as manually triggered from a workstati
   It then sends a Shutdown command to each computer in the JSON File
   Usage Example: 
     
-    'Stop-Computers -location Lab2' 
+    'Stop-Computers -location Lab2 
 
 ### Function: Start-Computers 
 
@@ -105,7 +105,7 @@ The script can be run on schedule as well as manually triggered from a workstati
   If there is no JSON file found, it will complain and instruct you to turn on all the computers manually and run the Get-Macs Function.  
   Example: 
   
-    Start-Computers -location Lab1'
+    Start-Computers -location Lab1
 
 
 ## Logging  
