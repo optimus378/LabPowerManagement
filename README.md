@@ -3,10 +3,14 @@ Starts and Stops Computers in a Lab Setting on a Schedule.
 
 
 
-Overview
+## Overview
 
 This script was created for a very specific environment, but could be adapted for other purposes. 
 Read the actual code. I did my best to explain how it works given the amount of time I felt like putting into the explanation. 
+
+- One goal of the script was to acheive this witout using any outside executables or supporting modules. 
+- Another goal was design this in a "set it and forget it" sort of way. 
+   - This is acheived by auto pruning the list of computers that will be started/stopped before each shutdown. 
 
 This Module manages the powering on and off of set of computers listed in a specified Active Directly OU. 
 It works by using set of function to dynamically update a JSON file with Mac Addresses of the Lab Computers based an Active Directory OU path that you set in the script. 
@@ -17,14 +21,14 @@ The script can be run on schedule as well as manually triggered from a workstati
 
 ** Do note that there are little to no error handling in this module and I don't expect to create any. It's quick and dirty. If you get errors, you'll have to read the Powershell &output.  **   
 
-Prerequisites:
+## Prerequisites:
 
-A Windows Domain Environment,
-A computer with the Active Directory PowerShell Module installed. 
-WinRM properly enabled on all computers that you'd like to run this script against.  
-Firewall Properly configured to allow WinRM access on all computers. (In essense you need to be able to access all computers in the lab remotely via PowerShell)
+- A Windows Domain Environment,
+- A computer with the Active Directory PowerShell Module installed. 
+- WinRM properly enabled on all computers that you'd like to run this script against.  
+- Firewall Properly configured to allow WinRM access on all computers. (In essense you need to be able to access all computers in the lab remotely via PowerShell)
 
--- First-time Usage Instructions or Manual Running. -- 
+## First-time Usage Instructions or Manual Running. -- 
 
   If you will be running this Module from multiple computers, you should share a folder(s) in a central location(s) where the JSON file(s) is/are accessible to the computers running the script.
   
@@ -56,9 +60,9 @@ Firewall Properly configured to allow WinRM access on all computers. (In essense
   Type 'Import-Module SCPowerManagement.psm1'
   Nice, the module is imported. From here you are able to run the functions listed below. 
 
--- Functions Overview --  
+## Functions Overview --  
 
-Function: Get-Macs
+### Function: Get-Macs
 
   Notes: 
   You shouldn't need to manually run this function unless you want to prepopulate the JSON files with mac addresses, Or just manually refresh them. 
@@ -79,7 +83,7 @@ Function: Get-Macs
   'Get-Macs -location LCH'
 
 
-Function: Stop-Computers
+### Function: Stop-Computers
 
   How it Works: 
   It first runs the Get-Macs function above in order to clean up/update the JSON File 
@@ -87,7 +91,7 @@ Function: Stop-Computers
   Usage Example: 
   'Stop-Computers -location SUL' 
 
-Function: Start-Computers 
+### Function: Start-Computers 
 
   How it works:
   This Loads the JSON file. 
@@ -96,11 +100,12 @@ Function: Start-Computers
   Ex: 'Start-Computers -location LCH'
 
 
--- Logging --- 
-  I didn't get too fancy here. 
-  Specify the $LogFilePath in the script. 
-  When Log File meets or exceeds 20MB(You can change this by setting $MaxFileSize), It's renamed with a .OLD extension. 
-  If there's already a LogFile with .OLD it deletes it. 
+## Logging  
+  I didn't get too fancy here.
+  
+  * Specify the $LogFilePath in the script. 
+  * When Log File meets or exceeds 20MB(You can change this by setting $MaxFileSize), It's renamed with a .OLD extension. 
+  * If there's already a LogFile with .OLD it deletes it. 
   The Log file will tell you:
   - A list of computers that were started and what Date/Time 
   - A list of computers that were stopped and what Date/Time 
@@ -111,24 +116,31 @@ Function: Start-Computers
              - If computer was removed because it was listed in the JSON file, but didn't respond for 14 days. 
 
 
--- Considerations -- 
+## Considerations  
 
-The way this script gets MAC addresses assumes that computer's NIC is in the 'up' state and it's named "Ethernet"
-'''
-Invoke-Command -ComputerName $Computer -scriptblock {Get-NetAdapter | Where-Object {($_.Status -eq 'up' -and $_.Name -eq "Ethernet")} | Select-Object MacAddress} -ErrorAction Stop
-'''
-I know there's better ways you could be more resilient when getting the mac address. 
+1. Once again, this script was made for a very specfic environment, but could be modified to suite your needs. 
 
-For instance, you could get the Mac address of the NIC that has the default gateway set. In most cases only one NIC per computer that has the default gateway set.
+2. The way this script gets MAC addresses assumes that computer's NIC is in the 'up' state and it's named "Ethernet"
 
-ex: This will get the Interface Index of the Nic with the DefaultRoute SEt. 
+       Invoke-Command -ComputerName $Computer -scriptblock {Get-NetAdapter | Where-Object {($_.Status -eq 'up' -and $_.Name -eq "Ethernet")} | Select-Object MacAddress}
 
-    $defaultRouteNic = Get-NetRoute -DestinationPrefix 0.0.0.0/0 | Sort-Object -Property RouteMetric | Select-Object -ExpandProperty ifIndex
+  I know there's better ways you could be more resilient when getting the mac address. 
+  For instance, you could get the Interface Index on the Computer that hase the default gateway set. (In most cases only one NIC per computer that has the default gateway set.)
+  Then plug that InterfaceIndex to get the Interface Alias of the Nic with the Default Gateway Set
+  Next, Run the Command to get the Mac Address of the $NicAlias, Like Below. I haven't tested that yet. 
 
-From there you could get the InterfaceAlias, and plug that alias into the Invoke Command above. 
-
+    $defaultRouteNic = Get-NetRoute -DestinationPrefix 0.0.0.0/0 | Sort-Object -Property RouteMetric | Select-Object -ExpandProperty ifIndex 
     $NICAlias = Get-NetIPAddress -AddressFamily IPv4 -InterfaceIndex $defaultRouteNic | Select-Object -ExpandProperty InterfaceAlias
+    Invoke-Command -ComputerName $Computer -scriptblock {Get-NetAdapter | Where-Object {($_.Status -eq 'up' -and $_.Name -eq $NicAlias)} | Select-Object MacAddress}
 
 
-
+3. Retrieving the correct Broadcast Address to send the magic packet.
+   Used to be, when sending magic packets using the broadcast address of 255.255.255.255 would work perfectly well, but this seemed stopped working in later version of Windows.
+   Instead, you must contsrtuct the magic packet with the Network address. example 192.168.1.255. It has something to do with the way the latest Windows Network Stack works.
+   If I recall, it seems that when using 255.255.255.255 as the broadcast address on a computer with multiple NICs, it does not decern which NIC to try to broadcast out from.
+   Anyway, if someone can provide more insight on that, that would be great. Wireshark was very helpful in determining the issue. 
+   
+   There's a function in the script called Get-BroadCast Address. It does it's best to determine the network address of the network. 
+   If you're having troubles with computers not waking up, investigate the broadcast address.  
+    
 
