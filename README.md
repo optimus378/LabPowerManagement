@@ -58,7 +58,10 @@ The script can be run on schedule as well as manually triggered from a workstati
   Save the Module and also place it in your Shared Folder or whereover you'll run it from. 
   Open PowerShell and navigate to the the powershell module path. 
 
-  Type 'Import-Module SCPowerManagement.psm1'
+  Type: 
+                             
+     'Import-Module SCPowerManagement.psm1'
+  
   Nice, the module is imported. From here you are able to run the functions listed below. 
 
 ## Functions Overview --  
