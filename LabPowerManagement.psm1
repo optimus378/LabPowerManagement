@@ -4,6 +4,7 @@ LocationName = The Arbitrary location where the lab resides. It's used as an ide
 SharedFolder = The shared folder where the Json file will be stored g
 JsonFileName = The filename of the Json file
 OUpath = The LDAP path of the computer's you'd like to manipulate. 
+$logfilePath = Full path where you'd like the log file stored. 
 #>
 
 
