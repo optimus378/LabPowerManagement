@@ -34,24 +34,24 @@ The script can be run on schedule as well as manually triggered from a workstati
   
   You'll need to define some things at the top of the script: 
            
-           - $Locations 
-               -  Location Name  
-               -  Shared Folder path
-               -  OU Path of the computers you'd like to target 
-           - $LogFilePath: Location of the Log File
+  - $Locations 
+      -  Location Name  
+      -  Shared Folder path
+      -  OU Path of the computers you'd like to target 
+  - $LogFilePath: Location of the Log File
 
-    $Locations = @{
-        Lab1= @{
-            SharedFolder = '\\SERVER\SHARE\'
-            OUPath = 'ou=Lab1 Computers, ou= Desktops,dc=contoso, dc=local'
+          $Locations = @{
+              Lab1= @{
+                  SharedFolder = '\\SERVER\SHARE\'
+                  OUPath = 'ou=Lab1 Computers, ou= Desktops,dc=contoso, dc=local'
 
-        }
-        Lab2 =@{
-            SharedFolder = '\\SERVER2\SHARE\'
-            OUPath = 'ou=Lab2 Computers, ou= Desktops,dc=contoso, dc=local'
+              }
+              Lab2 =@{
+                  SharedFolder = '\\SERVER2\SHARE\'
+                  OUPath = 'ou=Lab2 Computers, ou= Desktops,dc=contoso, dc=local'
 
-        }
-    }
+              }
+          }
 
 
 
