@@ -34,22 +34,21 @@ Firewall Properly configured to allow WinRM access on all computers. (In essense
            -  Shared Folder path
            -  OU Path of the computers you'd like to target 
            $LogFilePath: Location of the Log File
-'''    
 
-  $Locations = @{
-      Lab1= @{
-          SharedFolder = '\\SERVER\SHARE\'
-          OUPath = 'ou=Lab1 Computers, ou= Desktops,dc=contoso, dc=local'
+    $Locations = @{
+        Lab1= @{
+            SharedFolder = '\\SERVER\SHARE\'
+            OUPath = 'ou=Lab1 Computers, ou= Desktops,dc=contoso, dc=local'
 
-      }
-      Lab2 =@{
-          SharedFolder = '\\SERVER2\SHARE\'
-          OUPath = 'ou=Lab2 Computers, ou= Desktops,dc=contoso, dc=local'
+        }
+        Lab2 =@{
+            SharedFolder = '\\SERVER2\SHARE\'
+            OUPath = 'ou=Lab2 Computers, ou= Desktops,dc=contoso, dc=local'
 
-      }
-  }
+        }
+    }
 
-'''
+
 
   Save the Module and also place it in your Shared Folder or whereover you'll run it from. 
   Open PowerShell and navigate to the the powershell module path. 
@@ -115,21 +114,20 @@ Function: Start-Computers
 -- Considerations -- 
 
 The way this script gets MAC addresses assumes that computer's NIC is in the 'up' state and it's named "Ethernet"
-
-ie. 
+'''
 Invoke-Command -ComputerName $Computer -scriptblock {Get-NetAdapter | Where-Object {($_.Status -eq 'up' -and $_.Name -eq "Ethernet")} | Select-Object MacAddress} -ErrorAction Stop
-
+'''
 I know there's better ways you could be more resilient when getting the mac address. 
 
 For instance, you could get the Mac address of the NIC that has the default gateway set. In most cases only one NIC per computer that has the default gateway set.
 
 ex: This will get the Interface Index of the Nic with the DefaultRoute SEt. 
 
-  $defaultRouteNic = Get-NetRoute -DestinationPrefix 0.0.0.0/0 | Sort-Object -Property RouteMetric | Select-Object -ExpandProperty ifIndex
+    $defaultRouteNic = Get-NetRoute -DestinationPrefix 0.0.0.0/0 | Sort-Object -Property RouteMetric | Select-Object -ExpandProperty ifIndex
 
 From there you could get the InterfaceAlias, and plug that alias into the Invoke Command above. 
 
-  $NICAlias = Get-NetIPAddress -AddressFamily IPv4 -InterfaceIndex $defaultRouteNic | Select-Object -ExpandProperty InterfaceAlias
+    $NICAlias = Get-NetIPAddress -AddressFamily IPv4 -InterfaceIndex $defaultRouteNic | Select-Object -ExpandProperty InterfaceAlias
 
 
 
