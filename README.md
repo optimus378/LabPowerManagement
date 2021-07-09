@@ -132,24 +132,24 @@ The script can be run on schedule as well as manually triggered from a workstati
 
        Invoke-Command -ComputerName $Computer -scriptblock {Get-NetAdapter | Where-Object {($_.Status -eq 'up' -and $_.Name -eq "Ethernet")} | Select-Object MacAddress}
 
-  I know there's better ways you could be more resilient when getting the mac address. 
-  For instance, you could get the Interface Index on the Computer that hase the default gateway set. (In most cases only one NIC per computer that has the default gateway set.)
-  Then plug that InterfaceIndex to get the Interface Alias of the Nic with the Default Gateway Set
-  Next, Run the Command to get the Mac Address of the $NicAlias, Like Below. I haven't tested that yet. 
+I know there's better ways you could be more resilient when getting the mac address. 
+For instance, you could get the Interface Index on the Computer that hase the default gateway set. (In most cases only one NIC per computer that has the default gateway set.)
+Then plug that InterfaceIndex to get the Interface Alias of the Nic with the Default Gateway Set
+Next, Run the Command to get the Mac Address of the $NicAlias, Like Below. I haven't tested that yet. 
 
     $defaultRouteNic = Get-NetRoute -DestinationPrefix 0.0.0.0/0 | Sort-Object -Property RouteMetric | Select-Object -ExpandProperty ifIndex 
     $NICAlias = Get-NetIPAddress -AddressFamily IPv4 -InterfaceIndex $defaultRouteNic | Select-Object -ExpandProperty InterfaceAlias
-    Invoke-Command -ComputerName $Computer -scriptblock {Get-NetAdapter | Where-Object {($_.Status -eq 'up' -and $_.Name -eq $NicAlias)} | Select-Object MacAddress}
+    $Mac = Invoke-Command -ComputerName $Computer -scriptblock {Get-NetAdapter | Where-Object {($_.Status -eq 'up' -and $_.Name -eq $NicAlias)} | Select-Object MacAddress}
 
 
 3. Retrieving the correct Broadcast Address to send the magic packet.
-   
-   Used to be, when sending magic packets using the broadcast address of 255.255.255.255 would work perfectly well, but this seemed stopped working in later version of Windows.
-   Instead, you must contsrtuct the magic packet with the Network address. example 192.168.1.255. It has something to do with the way the latest Windows Network Stack works.
-   If I recall, it seems that when using 255.255.255.255 as the broadcast address on a computer with multiple NICs, it does not decern which NIC to try to broadcast out from.
-   Anyway, if someone can provide more insight on that, that would be great. Wireshark was very helpful in determining the issue. 
-   
-   There's a function in the script called Get-BroadCast Address. It does it's best to determine the network address of the network. 
-   If you're having troubles with computers not waking up, investigate the broadcast address.  
-    
+
+Used to be, when sending magic packets using the broadcast address of 255.255.255.255 would work perfectly well, but this seemed stopped working in later version of Windows.
+Instead, you must contsrtuct the magic packet with the Network address. example 192.168.1.255. It has something to do with the way the latest Windows Network Stack works.
+If I recall, it seems that when using 255.255.255.255 as the broadcast address on a computer with multiple NICs, it does not decern which NIC to try to broadcast out from.
+Anyway, if someone can provide more insight on that, that would be great. Wireshark was very helpful in determining the issue. 
+
+There's a function in the script called Get-BroadCast Address. It does it's best to determine the network address of the network. 
+If you're having troubles with computers not waking up, investigate the broadcast address.  
+
 
