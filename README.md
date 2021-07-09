@@ -3,7 +3,8 @@ Starts and Stops Computers in a Lab Setting on a Schedule.
 
 
 
-Overview 
+Overview
+
 This script was created for a very specific environment, but could be adapted for other purposes. 
 Read the actual code. I did my best to explain how it works given the amount of time I felt like putting into the explanation. 
 
