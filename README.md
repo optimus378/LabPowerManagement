@@ -84,7 +84,8 @@ The script can be run on schedule as well as manually triggered from a workstati
   If the Timestamp is older than 14 days, it prunes the Computer from the JSON File. 
 
   Usage Example: 
-  'Get-Macs -location LCH'
+  
+    Get-Macs -location Lab1
 
 
 ### Function: Stop-Computers
@@ -93,7 +94,8 @@ The script can be run on schedule as well as manually triggered from a workstati
   It first runs the Get-Macs function above in order to clean up/update the JSON File 
   It then sends a Shutdown command to each computer in the JSON File
   Usage Example: 
-  'Stop-Computers -location SUL' 
+    
+    'Stop-Computers -location Lab2' 
 
 ### Function: Start-Computers 
 
@@ -101,7 +103,9 @@ The script can be run on schedule as well as manually triggered from a workstati
   This Loads the JSON file. 
   For each computer in the JSON File, it sends a Wake-on-Lan packet. 
   If there is no JSON file found, it will complain and instruct you to turn on all the computers manually and run the Get-Macs Function.  
-  Ex: 'Start-Computers -location LCH'
+  Example: 
+  
+    Start-Computers -location Lab1'
 
 
 ## Logging  
@@ -139,6 +143,7 @@ The script can be run on schedule as well as manually triggered from a workstati
 
 
 3. Retrieving the correct Broadcast Address to send the magic packet.
+   
    Used to be, when sending magic packets using the broadcast address of 255.255.255.255 would work perfectly well, but this seemed stopped working in later version of Windows.
    Instead, you must contsrtuct the magic packet with the Network address. example 192.168.1.255. It has something to do with the way the latest Windows Network Stack works.
    If I recall, it seems that when using 255.255.255.255 as the broadcast address on a computer with multiple NICs, it does not decern which NIC to try to broadcast out from.
