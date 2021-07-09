@@ -7,6 +7,7 @@ Starts and Stops Computers in a Lab Setting on a Schedule.
 
 This script was created for a very specific environment, but could be adapted for other purposes. 
 Read the actual code. I did my best to explain how it works given the amount of time I felt like putting into the explanation. 
+I'm certain this script could be written much better, but I'm learning. 
 
 - One goal of the script was to acheive this witout using any outside executables or supporting modules. 
 - Another goal was design this in a "set it and forget it" sort of way. 
