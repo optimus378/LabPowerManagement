@@ -78,13 +78,13 @@ Example of $Locations Section:
   If a JSON file doesn't exist for the location and the SharedFolder path you specified in $locations, it will create one for you and attempt to populate it. 
 
   How it works: 
-  It checks for the existence of a JSON file in the Location you provided and SharedFolder path you provided. 
+  - It checks for the existence of a JSON file in the Location you provided and SharedFolder path you provided. 
      - If one is not found, it creates it. 
-  It then grabs all computers from Active Directory based on the $OUPath for that $location.
-  It pings every computer. If the computer is not responding, It removes it from the Mac Address Scan 
-  If the computer is not already in the JSON file, it scans for the mac address and adds the new computer to the JSON file with a timestamp 
-  If the computer is already in the JSON file, it updates time stamp and skips a check for the mac address. 
-  If the Timestamp is older than 14 days, it prunes the Computer from the JSON File. 
+  - It then grabs all computers from Active Directory based on the $OUPath for that $location.
+  - It pings every computer. If the computer is not responding, It removes it from the Mac Address Scan 
+  - If the computer is not already in the JSON file, it scans for the mac address and adds the new computer to the JSON file with a timestamp 
+  - If the computer is already in the JSON file, it updates time stamp and skips a check for the mac address. 
+  - If the Timestamp is older than 14 days, it prunes the Computer from the JSON File. 
 
   Usage Example: 
   
@@ -94,8 +94,10 @@ Example of $Locations Section:
 ### Function: Stop-Computers
 
   How it Works: 
-  It first runs the Get-Macs function above in order to clean up/update the JSON File 
-  It then sends a Shutdown command to each computer in the JSON File
+  
+  - It first runs the Get-Macs function above in order to clean up/update the JSON File 
+  - It then sends a Shutdown command to each computer in the JSON File
+  
   Usage Example: 
     
     Stop-Computers -location Lab2 
@@ -103,9 +105,10 @@ Example of $Locations Section:
 ### Function: Start-Computers 
 
   How it works:
-  This Loads the JSON file. 
-  For each computer in the JSON File, it sends a Wake-on-Lan packet. 
-  If there is no JSON file found, it will complain and instruct you to turn on all the computers manually and run the Get-Macs Function.  
+  
+  - This Loads the JSON file. 
+  - For each computer in the JSON File, it sends a Wake-on-Lan packet. 
+  - If there is no JSON file found, it will complain and instruct you to turn on all the computers manually and run the Get-Macs Function.  
   Example: 
   
     Start-Computers -location Lab1
